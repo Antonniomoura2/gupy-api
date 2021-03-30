@@ -12,23 +12,26 @@ const fakerator = require("fakerator")()
 @Injectable()
 export class BusinessService {
     constructor(
-        @InjectModel('business') private readonly userModel: Model<IBusiness>,
+        @InjectModel('business') private readonly businessModel: Model<IBusiness>,
     ) {
     }
 
-    async sendToBling(createCategoryDto: CreateBusinessDto) {
+    async sendToBling(createBusinessDto: CreateBusinessDto) {
         const data  = {
-            originalItem: createCategoryDto.current,
-            parsedItem: JSON.parse(parserXml2Json.xml2json(this.normalize(createCategoryDto.current)))
+            id: createBusinessDto.current.id,
+            originalItem: createBusinessDto.current,
+            parsedItem: JSON.parse(parserXml2Json.xml2json(this.normalize(createBusinessDto.current)))
         }
-        if (createCategoryDto.current.status !== 'won' && createCategoryDto.previous.status !== 'open') {
+        const findBusiness = await this.businessModel.findOne({id: createBusinessDto.current.id}).exec()
+        console.log(createBusinessDto.previous.status)
+        if (findBusiness && createBusinessDto.current.status === "won" && createBusinessDto.previous.status === "won") {
             throw new HttpException({
                 status: HttpStatus.NOT_ACCEPTABLE,
                 error: 'Item não ganho',
             }, HttpStatus.NOT_ACCEPTABLE);
         }
-        await sendServiceToBling(this.normalize(createCategoryDto.current))
-        return await this.userModel.create(data);
+        await sendServiceToBling(this.normalize(createBusinessDto.current))
+        return await this.businessModel.create(data);
     }
 
     normalize(current) {
@@ -63,5 +66,9 @@ export class BusinessService {
                         <obs>Testando o campo observações do pedido</obs>
                         <obs_internas>Testando o campo observações internas do pedido</obs_internas>
                     </pedido>`
+    }
+
+    async getAllBusiness() {
+        return await this.businessModel.find();
     }
 }
