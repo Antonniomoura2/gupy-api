@@ -10,8 +10,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     ConfigModule.forRoot({
       isGlobal: true
     }),
-    MongooseModule.forRoot(process.env.NODE_ENV == 'development' ?
-        process.env.DATABASE_HOSTDEV : process.env.DATABASE_HOST,
+    MongooseModule.forRoot( process.env.DATABASE_HOST,
         {
           useNewUrlParser: true,
           useCreateIndex: true,
