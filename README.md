@@ -11,3 +11,13 @@ Also configure the database with a mongo atlas url **all data will be sent by em
 
 ## Installation
 #### npm run start:dev
+
+
+## Running the app
+### Api addresses:
+
+#### Webhook /POST
+/pipedrive/webhook
+
+#### List Data /GET
+/pipedrive
